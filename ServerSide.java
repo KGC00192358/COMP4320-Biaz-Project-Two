@@ -26,7 +26,7 @@ public class ServerSide {
       //Friend receivedFriend = decoder.decode(packet);
 
       System.out.println("Received Message");
-      System.out.println(echoMessage)
+      System.out.println(echoMessage);
       //System.out.println(receivedFriend);
       
       sock.close();
