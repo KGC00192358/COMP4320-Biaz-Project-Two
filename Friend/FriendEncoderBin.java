@@ -1,5 +1,5 @@
 import java.io.*;  // for ByteArrayOutputStream and DataOutputStream
-
+i
 public class FriendEncoderBin implements FriendEncoder, FriendBinConst {
 
   private String encoding;  // Character encoding
