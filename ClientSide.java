@@ -15,55 +15,52 @@ public class ClientSide {
 
 		InetAddress destAddr = InetAddress.getByName(args[0]);  // Destination address
 		int destPort = Integer.parseInt(args[1]);               // Destination port
-		int recPort = 8080;
-
+		int recPort = 10024;
 		while(true) { 
-
+			
+			DatagramSocket sock = new DatagramSocket();
 			Operation op = ClientSide.getOperation();
 			OperationEncoderBin encoder = new OperationEncoderBin();
 			byte[] operationHeader = encoder.encode(op);
 
-			if(sendPacket(destAddr, destPort, operationHeader)) {	
+			if(sendPacket(sock, destAddr, destPort, operationHeader)) {	
 				System.out.println("Sent operation: " + op);
 			}
-			DatagramPacket answerPacket = receivePacket(recPort);
+			DatagramPacket answerPacket = receivePacket(sock);
 
 			System.out.println("Recieve a thing: ");
 			handleAnswer(answerPacket);
+			sock.close();
 
 		}
 	}
 
-	private static boolean sendPacket (InetAddress ip, int port, byte[]header) {
+	private static boolean sendPacket(DatagramSocket sock, InetAddress ip, int port, byte[]header) {
 		try {
-			DatagramSocket sock = new DatagramSocket();
 			DatagramPacket outPacket = new DatagramPacket(header, header.length, ip, port);
 			sock.send(outPacket);
-			sock.close();
 		} catch (Exception e) {
 			return false;
 		}
 		return true;
 
 	}
-	private static DatagramPacket receivePacket(int port) throws Exception {
+	private static DatagramPacket receivePacket(DatagramSocket sock) throws Exception {
 
-		DatagramSocket sock = new DatagramSocket(port);  // UDP socket for receiving      
 		DatagramPacket packet = new DatagramPacket(new byte[7],7);
 		System.out.println("Awaiting operation");
 		sock.receive(packet); 
-		sock.close();
 		return packet;
 
 	}
 
 	public static Operation getOperation(){
 		Operation retOp;
-		long ID = (int) Math.random() * 9999 + 1000;	
+		byte ID = (byte) 1;	
 		char operation;
 		short operand1 = 0;
 		short operand2 = 0;
-		int op_code;
+		byte op_code;
 		System.out.println("Please enter your operation(+ - * / >> << ~) ");
 		Scanner in = new Scanner(System.in);
 		operation = in.next().charAt(0);
@@ -103,9 +100,9 @@ public class ClientSide {
 				break;
 		}
 		if (op_code == 6) {
-			retOp = new Operation(ID, op_code, 1, operand1, (short) 0);
+			retOp = new Operation(ID, op_code, (byte) 1, operand1, (short) 0);
 		} else {
-			retOp = new Operation(ID, op_code, 2, operand1, operand2);
+			retOp = new Operation(ID, op_code, (byte) 2, operand1, operand2);
 		}
 		return retOp;
 

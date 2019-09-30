@@ -1,5 +1,6 @@
 import java.net.*;  // for DatagramSocket and DatagramPacket
 import java.io.*;   // for IOException
+import java.util.*;
 
 public class ServerSide {
 
@@ -11,43 +12,42 @@ public class ServerSide {
 
 		int recPort = Integer.parseInt(args[0]);   // Receiving Port
 		int destPort = 8080; //outgoing port
+
 		while(true) { 
 
-
-			DatagramPacket operationPacket = receivePacket(recPort);
+			
+			DatagramSocket sock = new DatagramSocket(recPort);  // UDP socket for receiving      
+			DatagramPacket operationPacket = receivePacket(sock);
 			System.out.println("Recieved some shit");
 			System.out.println("Attempting Operation");   
 			byte[] resultHeader = performOperation(operationPacket);
 			System.out.println("Operation Successfull");
 			System.out.println("Attempting to send");            
 			Thread.sleep(2000);
-			if (!sendPacket(dest, destPort, resultHeader)) {
+			if (!sendPacket(sock, operationPacket, resultHeader)) {
 			System.out.println("Sending Failed");
 			} else {
 			System.out.println("Sent Successfully");
 			}
 
+		sock.close();
 		}
 
 
 	}
 
-	private static DatagramPacket receivePacket(int port) throws Exception {
+	private static DatagramPacket receivePacket(DatagramSocket sock) throws Exception {
 
-		DatagramSocket sock = new DatagramSocket(port);  // UDP socket for receiving      
-		DatagramPacket packet = new DatagramPacket(new byte[1024],1024);
+		DatagramPacket packet = new DatagramPacket(new byte[8],8);
 		System.out.println("Awaiting operation");
 		sock.receive(packet); 
-		sock.close();
 		return packet;
 
 	}
-	private static boolean sendPacket(InetAddress ip, int destPort,  byte[] header) {
+	private static boolean sendPacket(DatagramSocket sock, DatagramPacket p,  byte[] header) {
                      try {
-		     DatagramSocket sock = new DatagramSocket();
-		     DatagramPacket outPacket = new DatagramPacket(header, header.length, ip, destPort);
+		     DatagramPacket outPacket = new DatagramPacket(header, header.length, InetAddress.getByName("localhost"), p.getPort());
 		     sock.send(outPacket);
-		     sock.close();
 		     } catch (Exception e) {
 			return false;
 		     }
@@ -55,6 +55,9 @@ public class ServerSide {
 	}
 
 	private static byte[] performOperation(DatagramPacket p) throws IOException {
+		System.out.println("Packet Recieved: ");
+		byte[] buffer = p.getData();
+		System.out.println(Arrays.toString(buffer));
 		int recLngth = p.getLength();
 		int result = 0;
 		int operation = -1;
@@ -86,9 +89,9 @@ public class ServerSide {
 		}
 		byte[] tmp;
 		if(recLngth == op.totalLength) {
-			tmp = encodeAnswer((byte) 01, result, (byte) 0);
+			tmp = encodeAnswer(op.ID, result, (byte) 0);
 		} else {
-			tmp = encodeAnswer((byte) 01, result, (byte) 127);
+			tmp = encodeAnswer(op.ID, result, (byte) 127);
 		}
 		return tmp;
 

@@ -6,10 +6,10 @@ public class OperationDecoderBin implements OperationDecoder, OperationBinConst 
 	
 	public Operation decode(InputStream wire) throws IOException {
 		DataInputStream src = new DataInputStream(wire);
-		int length = src.readInt();
-		long ID	= src.readLong();
-		int op_code = src.readInt();
-		int numberOfOperands = src.readInt();
+		byte length = src.readByte();
+		byte ID	= src.readByte();
+		byte op_code = src.readByte();
+		byte numberOfOperands = src.readByte();
 		short operandOne = src.readShort();
 		short operandTwo = src.readShort();
 		

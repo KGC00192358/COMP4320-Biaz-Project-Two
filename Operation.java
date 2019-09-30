@@ -1,24 +1,22 @@
 public class Operation {
 
-	public long ID;            // Item identification number
-	public int opCode;
-	public int numberOperands;
+	public byte ID;            // Item identification number
+	public byte opCode;
+	public byte numberOperands;
 	public short operandOne;
 	public short operandTwo;
-	public int totalLength;
+	public byte totalLength;
 	
 
 
-	public Operation(long in_ID, int op_Code, int numberOfOperands, short operand1, short operand2)  {
+	public Operation(byte in_ID, byte op_Code, byte numberOfOperands, short operand1, short operand2)  {
 		this.ID           = in_ID;
 		this.opCode = op_Code;
 		this.numberOperands = numberOfOperands;
 		this.operandOne = operand1;
 		this.operandTwo = operand2;
-		this.totalLength = 4 + 12 + 8; //2 2 Byte numbers(short) + 3 4 Byte numbers(int) + 1 8 byte number (long)
-		if (numberOfOperands < 2) {
-			this.totalLength -= 2; //only one operand, losing 1 short.
-		}
+		this.totalLength = 8;
+		
 	}
 
 	public String toString() {
