@@ -22,9 +22,14 @@ public class ClientSide {
 			OperationEncoderBin encoder = new OperationEncoderBin();
 			byte[] operationHeader = encoder.encode(op);
 
-			DatagramPacket message = new DatagramPacket(operationHeader, operationHeader.length, 
+			DatagramPacket operationPacket = new DatagramPacket(operationHeader, operationHeader.length, 
 					destAddr, destPort);
-			sock.send(message);
+			sock.send(operationPacket);
+			System.out.println("Sent: " + operationPacket);
+			sock.receive(operationPacket);
+			
+			System.out.println("Recieve a thing: ");
+			System.out.println(operationPacket):
 
 			sock.close();
 		}
