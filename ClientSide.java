@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class ClientSide {
 
-		final char NOT = '~';
+		final static char NOT = '~';
 	public static void main(String args[]) throws Exception {
 
 		if (args.length != 2 && args.length != 3)  // Test for correct # of args        
@@ -18,8 +18,8 @@ public class ClientSide {
 		while(true) { 
 			DatagramSocket sock = new DatagramSocket(); // UDP socket for sending
 
-			Operation op = getOperation();
-			OperationEncoder encoder = new OperationEncoder();
+			Operation op = ClientSide.getOperation();
+			OperationEncoderBin encoder = new OperationEncoderBin();
 			byte[] operationHeader = encoder.encode(op);
 
 			DatagramPacket message = new DatagramPacket(operationHeader, operationHeader.length, 
@@ -29,7 +29,7 @@ public class ClientSide {
 			sock.close();
 		}
 	}
-	public Operation getOperation(){
+	public static Operation getOperation(){
 		Operation retOp;
 		long ID = (int) Math.random() * 9999 + 1000;	
 		char operation;

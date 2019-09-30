@@ -7,10 +7,10 @@ public class OperationEncoderBin implements OperationEncoder, OperationBinConst 
 		DataOutputStream out = new DataOutputStream(buf);
 		out.writeInt(op.totalLength);
 		out.writeLong(op.ID);
-		out.writeInt(op.op_code);
+		out.writeInt(op.opCode);
 		out.writeInt(op.numberOperands);
-		out.writeShort(op.operand1);
-		out.writeShort(op.operand2);
+		out.writeShort(op.operandOne);
+		out.writeShort(op.operandTwo);
 		
 		out.flush();
 		return buf.toByteArray();
