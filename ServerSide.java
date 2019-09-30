@@ -1,7 +1,4 @@
 import java.net.*;  // for DatagramSocket and DatagramPacket
-
-import com.sun.org.apache.xpath.internal.operations.Operation;
-
 import java.io.*;   // for IOException
 
 public class ServerSide {
@@ -17,18 +14,23 @@ public class ServerSide {
       DatagramPacket packet = new DatagramPacket(new byte[1024],1024);
       sock.receive(packet); 
       
-      byte[] resultPacket = performOperation(packet);
+      byte[] resultHeader = performOperation(packet);
+      DatagramPacket resultPacket = new DatagramPacket(resultHeader,resultHeader.length, InetAddress.getLocalHost(), port);
             
       sock.send(resultPacket);
       
       sock.close();
 	}
-     	public static byte[] performOperation(DatagramPacket p) {
-     		int recLngth = p.getLength()
+     	
+     	
+  }
+
+private static byte[] performOperation(DatagramPacket p) throws IOException {
+	int recLngth = p.getLength();
      		int result = 0;
      		int operation = -1;
      		OperationDecoderBin decoder = new OperationDecoderBin();     	      
-     	      Operation op = decoder.decoder(p);
+     	      Operation op = decoder.decode(p);
      	      operation = op.opCode;
      	      
      	      switch (operation) {
@@ -54,22 +56,20 @@ public class ServerSide {
      	      if(recLngth == op.totalLength) {
      	    	   tmp = encodeAnswer(op.ID, result, 0);
      	      } else {
-     	    	  tmp = encodeAnser(op.ID, result, 127);
+     	    	  tmp = encodeAnswer(op.ID, result, 127);
      	      }
      	      return tmp;
      	      
-
-     	}
-     	public static byte[] encodeAnswer(int ID, int result, int errorCode) {
-     		ByteArrayOutputStream buf = new ByteArrayOutputStream();
-    		DataOutputStream out = new DataOutputStream(buf);
-    		out.writeInt(7);
-    		out.writeInt(ID);
-    		out.writeInt(errorCode);
-    		out.writeInt(result);
-    		
-    		out.flush();
-    		return buf.toByteArray();
-     	}
-  }
+}
+public static byte[] encodeAnswer(long ID, int result, int errorCode) throws IOException {
+		ByteArrayOutputStream buf = new ByteArrayOutputStream();
+	DataOutputStream out = new DataOutputStream(buf);
+	out.writeInt(7);
+	out.writeLong(ID);
+	out.writeInt(errorCode);
+	out.writeInt(result);
+	
+	out.flush();
+	return buf.toByteArray();
+	}
 }
