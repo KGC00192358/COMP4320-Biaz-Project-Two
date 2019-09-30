@@ -13,7 +13,7 @@ public class OperationDecoderBin implements OperationDecoder, OperationBinConst 
 		short operandOne = src.readShort();
 		short operandTwo = src.readShort();
 		
-		return new Operation(length, ID, op_code, numberOfOperands, operandOne, operandTwo);
+		return new Operation(ID, op_code, numberOfOperands, operandOne, operandTwo);
 	}
 	
 	public Operation decode(DatagramPacket p) throws IOException {

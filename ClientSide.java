@@ -1,10 +1,11 @@
 import java.net.*;  // for DatagramSocket, DatagramPacket, and InetAddress
 import java.io.*;   // for IOException
 import java.util.Scanner;
+import java.util.Arrays;
 
 public class ClientSide {
 
-		final static char NOT = '~';
+	final static char NOT = '~';
 	public static void main(String args[]) throws Exception {
 
 		if (args.length != 2 && args.length != 3)  // Test for correct # of args        
@@ -14,26 +15,48 @@ public class ClientSide {
 
 		InetAddress destAddr = InetAddress.getByName(args[0]);  // Destination address
 		int destPort = Integer.parseInt(args[1]);               // Destination port
+		int recPort = 8080;
 
 		while(true) { 
-			DatagramSocket sock = new DatagramSocket(); // UDP socket for sending
 
 			Operation op = ClientSide.getOperation();
 			OperationEncoderBin encoder = new OperationEncoderBin();
 			byte[] operationHeader = encoder.encode(op);
 
-			DatagramPacket operationPacket = new DatagramPacket(operationHeader, operationHeader.length, 
-					destAddr, destPort);
-			sock.send(operationPacket);
-			System.out.println("Sent: " + operationPacket);
-			sock.receive(operationPacket);
-			
-			System.out.println("Recieve a thing: ");
-			System.out.println(operationPacket):
+			if(sendPacket(destAddr, destPort, operationHeader)) {	
+				System.out.println("Sent operation: " + op);
+			}
+			DatagramPacket answerPacket = receivePacket(recPort);
 
-			sock.close();
+			System.out.println("Recieve a thing: ");
+			handleAnswer(answerPacket);
+
 		}
 	}
+
+	private static boolean sendPacket (InetAddress ip, int port, byte[]header) {
+		try {
+			DatagramSocket sock = new DatagramSocket();
+			DatagramPacket outPacket = new DatagramPacket(header, header.length, ip, port);
+			sock.send(outPacket);
+			sock.close();
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+
+	}
+	private static DatagramPacket receivePacket(int port) throws Exception {
+
+		DatagramSocket sock = new DatagramSocket(port);  // UDP socket for receiving      
+		DatagramPacket packet = new DatagramPacket(new byte[7],7);
+		System.out.println("Awaiting operation");
+		sock.receive(packet); 
+		sock.close();
+		return packet;
+
+	}
+
 	public static Operation getOperation(){
 		Operation retOp;
 		long ID = (int) Math.random() * 9999 + 1000;	
@@ -58,9 +81,9 @@ public class ClientSide {
 				op_code = 0;
 				break;
 			case '-':
-			       op_code = 1;
-		       		break;
-		 	case '*':
+				op_code = 1;
+				break;
+			case '*':
 				op_code = 2;
 				break;
 			case '/':
@@ -87,4 +110,18 @@ public class ClientSide {
 		return retOp;
 
 	}
+	private static void handleAnswer(DatagramPacket p) throws IOException {
+		byte[] buffer = p.getData();
+		System.out.println(Arrays.toString(buffer));
+		ByteArrayInputStream payload =
+			new ByteArrayInputStream(p.getData(), p.getOffset(), p.getLength());
+		DataInputStream src = new DataInputStream(payload);
+		byte length = src.readByte();
+		byte id = src.readByte();
+		byte errorCode = src.readByte();
+		int answer = src.readInt();
+		System.out.println("Answer: " + answer);
+
+	}
+	
 }
