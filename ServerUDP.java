@@ -2,7 +2,7 @@ import java.net.*;  // for DatagramSocket and DatagramPacket
 import java.io.*;   // for IOException
 import java.util.*;
 
-public class ServerSide {
+public class ServerUDP {
 
 	public static void main (String[] args) throws Exception {
 		InetAddress dest = InetAddress.getByName("localhost");
@@ -18,8 +18,7 @@ public class ServerSide {
 			
 			DatagramSocket sock = new DatagramSocket(recPort);  // UDP socket for receiving      
 			DatagramPacket operationPacket = receivePacket(sock);
-			System.out.println("Recieved some shit");
-			System.out.println("Attempting Operation");   
+			System.out.println("Recieved operationPacket");
 			byte[] resultHeader = performOperation(operationPacket);
 			System.out.println("Operation Successfull");
 			System.out.println("Attempting to send");            
@@ -55,7 +54,6 @@ public class ServerSide {
 	}
 
 	private static byte[] performOperation(DatagramPacket p) throws IOException {
-		System.out.println("Packet Recieved: ");
 		byte[] buffer = p.getData();
 		System.out.println(Arrays.toString(buffer));
 		int recLngth = p.getLength();
@@ -63,7 +61,12 @@ public class ServerSide {
 		int operation = -1;
 		OperationDecoderBin decoder = new OperationDecoderBin();     	      
 		Operation op = decoder.decode(p);
+		
 		operation = op.opCode;
+
+		
+		System.out.println("Attempting Operation below: ");   
+		System.out.println(op);
 
 		switch (operation) {
 			case(0):

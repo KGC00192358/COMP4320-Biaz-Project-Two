@@ -2,8 +2,9 @@ import java.net.*;  // for DatagramSocket, DatagramPacket, and InetAddress
 import java.io.*;   // for IOException
 import java.util.Scanner;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
-public class ClientSide {
+public class ClientUDP {
 
 	final static char NOT = '~';
 	final static char SHIFTR = '>';
@@ -24,14 +25,18 @@ public class ClientSide {
 			Operation op = ClientSide.getOperation();
 			OperationEncoderBin encoder = new OperationEncoderBin();
 			byte[] operationHeader = encoder.encode(op);
-
+			long startTime = System.nanoTime();
 			if(sendPacket(sock, destAddr, destPort, operationHeader)) {	
 				System.out.println("Sent operation: " + op);
 			}
 			DatagramPacket answerPacket = receivePacket(sock);
-
-			System.out.println("Recieve a thing: ");
+			long endTime = System.nanoTime();
+			System.out.println("Recieved a answer packet: ");
 			handleAnswer(answerPacket);
+			long elaspedTime = endTime - startTime; 
+			long elaspedTimeNoServer = endTime - startTime - 2000000000; //two is the server wait time
+			System.out.println("Total Ellapsed Time: " + elaspedTime / 1000000 + " ms");
+			System.out.println("Elasped Time without server wait: " + elaspedTimeNoServer / 1000000 + " ms");
 			sock.close();
 
 		}
@@ -119,7 +124,7 @@ public class ClientSide {
 		byte id = src.readByte();
 		byte errorCode = src.readByte();
 		int answer = src.readInt();
-		System.out.println("Answer: " + answer);
+		System.out.println("Answer for request ID number " + id + ": " + answer);
 
 	}
 	
