@@ -19,18 +19,17 @@ public class ClientSide {
 			DatagramSocket sock = new DatagramSocket(); // UDP socket for sending
 
 			Operation op = getOperation();
+			OperationEncoder encoder = new OperationEncoder();
+			byte[] operationHeader = encoder.encode(op);
 
-			String messageString = "Test Message From Client";
-			byte[] messageArray = messageString.getBytes();
-
-			DatagramPacket message = new DatagramPacket(messageArray, messageArray.length, 
+			DatagramPacket message = new DatagramPacket(operationHeader, operationHeader.length, 
 					destAddr, destPort);
 			sock.send(message);
 
 			sock.close();
 		}
 	}
-	static public Operation getOperation(){
+	public Operation getOperation(){
 		Operation retOp;
 		long ID = (int) Math.random() * 9999 + 1000;	
 		char operation;

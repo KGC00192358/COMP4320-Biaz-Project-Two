@@ -1,11 +1,11 @@
 public class Operation {
 
 	public long ID;            // Item identification number
-	int opCode;
-	int numberOperands;
-	short operandOne;
-	short operandTwo;
-	int totalLength;
+	public int opCode;
+	public int numberOperands;
+	public short operandOne;
+	public short operandTwo;
+	public int totalLength;
 	
 
 
