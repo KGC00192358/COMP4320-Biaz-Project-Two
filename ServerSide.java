@@ -46,7 +46,7 @@ public class ServerSide {
 	}
 	private static boolean sendPacket(DatagramSocket sock, DatagramPacket p,  byte[] header) {
                      try {
-		     DatagramPacket outPacket = new DatagramPacket(header, header.length, InetAddress.getByName("localhost"), p.getPort());
+		     DatagramPacket outPacket = new DatagramPacket(header, header.length, p.getAddress(), p.getPort());
 		     sock.send(outPacket);
 		     } catch (Exception e) {
 			return false;
