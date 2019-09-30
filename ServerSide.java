@@ -79,10 +79,13 @@ public class ServerSide {
 				result = op.operandOne/op.operandTwo;
 				break;
 			case(4):
+				result = op.operandOne >> 1;
 				break;
 			case(5):
+				result = op.operandOne << 1;
 				break;
 			case(6):
+				result = ~op.operandOne;
 				break;
 			default:
 				break;

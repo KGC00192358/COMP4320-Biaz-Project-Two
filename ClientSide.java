@@ -6,6 +6,8 @@ import java.util.Arrays;
 public class ClientSide {
 
 	final static char NOT = '~';
+	final static char SHIFTR = '>';
+	final static char SHIFTL = '<';
 	public static void main(String args[]) throws Exception {
 
 		if (args.length != 2 && args.length != 3)  // Test for correct # of args        
@@ -64,7 +66,7 @@ public class ClientSide {
 		System.out.println("Please enter your operation(+ - * / >> << ~) ");
 		Scanner in = new Scanner(System.in);
 		operation = in.next().charAt(0);
-		if (operation == NOT) {
+		if (operation == NOT || operation == SHIFTL || operation == SHIFTR) {
 			System.out.println("Please input your operand: ");
 			operand1 = in.nextShort();
 		} else {
