@@ -19,10 +19,12 @@ public class ClientUDP {
 		InetAddress destAddr = InetAddress.getByName(args[0]);  // Destination address
 		int destPort = Integer.parseInt(args[1]);               // Destination port
 		int recPort = 10024;
+		byte ID = 0;
 		while(true) { 
 			
 			DatagramSocket sock = new DatagramSocket();
-			Request op = getRequest();
+			Request op = getRequest(ID);
+			ID++;
 			RequestEncoderBin encoder = new RequestEncoderBin();
 			byte[] operationHeader = encoder.encode(op);
 			long startTime = System.nanoTime();
@@ -61,9 +63,8 @@ public class ClientUDP {
 
 	}
 
-	public static Request getRequest(){
+	public static Request getRequest(byte ID){
 		Request retOp;
-		byte ID = (byte) 1;	
 		char operation;
 		short operand1 = 0;
 		short operand2 = 0;

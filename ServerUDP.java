@@ -19,7 +19,8 @@ public class ServerUDP {
 			DatagramSocket sock = new DatagramSocket(recPort);  // UDP socket for receiving      
 			DatagramPacket operationPacket = receivePacket(sock);
 			System.out.println("Recieved operationPacket");
-			byte[] resultHeader = performRequest(operationPacket);
+			
+			byte[] resultHeader = encodeAnswer(performRequest(operationPacket));
 			System.out.println("Request Successfull");
 			System.out.println("Attempting to send");            
 			Thread.sleep(2000);
@@ -53,7 +54,7 @@ public class ServerUDP {
 		     return true;
 	}
 
-	private static byte[] performRequest(DatagramPacket p) throws IOException {
+	private static Response performRequest(DatagramPacket p) throws IOException {
 		byte[] buffer = p.getData();
 		System.out.println(Arrays.toString(buffer));
 		int recLngth = p.getLength();
@@ -93,22 +94,22 @@ public class ServerUDP {
 			default:
 				break;
 		}
-		byte[] tmp;
+		Response tmp = null;
 		if(recLngth == op.totalLength) {
-			tmp = encodeAnswer(op.ID, result, (byte) 0);
+			tmp = new Response(op.ID, (byte) 0, result);
 		} else {
-			tmp = encodeAnswer(op.ID, result, (byte) 127);
+			tmp = new Response(op.ID, (byte) 127, result);
 		}
 		return tmp;
 
 	}
-	public static byte[] encodeAnswer(byte ID, int result, byte errorCode) throws IOException {
+	public static byte[] encodeAnswer(Response ans) throws IOException {
 		ByteArrayOutputStream buf = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(buf);
-		out.writeByte(7);
-		out.writeByte(ID);
-		out.writeByte(errorCode);
-		out.writeInt(result);
+		out.writeByte(ans.total_length);
+		out.writeByte(ans.ID);
+		out.writeByte(ans.errorCode);
+		out.writeInt(ans.result);
 
 		out.flush();
 		return buf.toByteArray();
