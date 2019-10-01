@@ -19,8 +19,8 @@ public class ServerUDP {
 			DatagramSocket sock = new DatagramSocket(recPort);  // UDP socket for receiving      
 			DatagramPacket operationPacket = receivePacket(sock);
 			System.out.println("Recieved operationPacket");
-			byte[] resultHeader = performOperation(operationPacket);
-			System.out.println("Operation Successfull");
+			byte[] resultHeader = performRequest(operationPacket);
+			System.out.println("Request Successfull");
 			System.out.println("Attempting to send");            
 			Thread.sleep(2000);
 			if (!sendPacket(sock, operationPacket, resultHeader)) {
@@ -53,19 +53,19 @@ public class ServerUDP {
 		     return true;
 	}
 
-	private static byte[] performOperation(DatagramPacket p) throws IOException {
+	private static byte[] performRequest(DatagramPacket p) throws IOException {
 		byte[] buffer = p.getData();
 		System.out.println(Arrays.toString(buffer));
 		int recLngth = p.getLength();
 		int result = 0;
 		int operation = -1;
-		OperationDecoderBin decoder = new OperationDecoderBin();     	      
-		Operation op = decoder.decode(p);
+		RequestDecoderBin decoder = new RequestDecoderBin();     	      
+		Request op = decoder.decode(p);
 		
 		operation = op.opCode;
 
 		
-		System.out.println("Attempting Operation below: ");   
+		System.out.println("Attempting Request below: ");   
 		System.out.println(op);
 
 		switch (operation) {

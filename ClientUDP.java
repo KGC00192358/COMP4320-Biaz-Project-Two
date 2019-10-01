@@ -22,8 +22,8 @@ public class ClientUDP {
 		while(true) { 
 			
 			DatagramSocket sock = new DatagramSocket();
-			Operation op = ClientSide.getOperation();
-			OperationEncoderBin encoder = new OperationEncoderBin();
+			Request op = getRequest();
+			RequestEncoderBin encoder = new RequestEncoderBin();
 			byte[] operationHeader = encoder.encode(op);
 			long startTime = System.nanoTime();
 			if(sendPacket(sock, destAddr, destPort, operationHeader)) {	
@@ -61,8 +61,8 @@ public class ClientUDP {
 
 	}
 
-	public static Operation getOperation(){
-		Operation retOp;
+	public static Request getRequest(){
+		Request retOp;
 		byte ID = (byte) 1;	
 		char operation;
 		short operand1 = 0;
@@ -107,9 +107,9 @@ public class ClientUDP {
 				break;
 		}
 		if (op_code == 6) {
-			retOp = new Operation(ID, op_code, (byte) 1, operand1, (short) 0);
+			retOp = new Request(ID, op_code, (byte) 1, operand1, (short) 0);
 		} else {
-			retOp = new Operation(ID, op_code, (byte) 2, operand1, operand2);
+			retOp = new Request(ID, op_code, (byte) 2, operand1, operand2);
 		}
 		return retOp;
 

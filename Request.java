@@ -1,4 +1,4 @@
-public class Operation {
+public class Request {
 
 	public byte ID;            // Item identification number
 	public byte opCode;
@@ -9,7 +9,7 @@ public class Operation {
 	
 
 
-	public Operation(byte in_ID, byte op_Code, byte numberOfOperands, short operand1, short operand2)  {
+	public Request(byte in_ID, byte op_Code, byte numberOfOperands, short operand1, short operand2)  {
 		this.ID           = in_ID;
 		this.opCode = op_Code;
 		this.numberOperands = numberOfOperands;
