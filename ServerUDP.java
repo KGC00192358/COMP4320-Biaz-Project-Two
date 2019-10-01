@@ -20,7 +20,7 @@ public class ServerUDP {
 			DatagramPacket operationPacket = receivePacket(sock);
 			System.out.println("Recieved operationPacket");
 			byte[] resultHeader = performRequest(operationPacket);
-			System.out.println("Request Successfull");
+			System.out.println("Request Successful");
 			System.out.println("Attempting to send");            
 			Thread.sleep(2000);
 			if (!sendPacket(sock, operationPacket, resultHeader)) {
