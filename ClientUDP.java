@@ -13,7 +13,7 @@ public class ClientUDP {
 
 		if (args.length != 2 && args.length != 3)  // Test for correct # of args        
 			throw new IllegalArgumentException("Parameter(s): <Destination>" +
-					" <Port> [<encoding]");
+					" <Port> [encoding]");
 
 
 		InetAddress destAddr = InetAddress.getByName(args[0]);  // Destination address
@@ -31,11 +31,11 @@ public class ClientUDP {
 			}
 			DatagramPacket answerPacket = receivePacket(sock);
 			long endTime = System.nanoTime();
-			System.out.println("Recieved a answer packet: ");
+			System.out.println("Received a answer packet: ");
 			handleAnswer(answerPacket);
 			long elaspedTime = endTime - startTime; 
 			long elaspedTimeNoServer = endTime - startTime - 2000000000; //two is the server wait time
-			System.out.println("Total Ellapsed Time: " + elaspedTime / 1000000 + " ms");
+			System.out.println("Total Elapsed Time: " + elaspedTime / 1000000 + " ms");
 			System.out.println("Elasped Time without server wait: " + elaspedTimeNoServer / 1000000 + " ms");
 			sock.close();
 
@@ -68,7 +68,7 @@ public class ClientUDP {
 		short operand1 = 0;
 		short operand2 = 0;
 		byte op_code;
-		System.out.println("Please enter your operation(+ - * / >> << ~) ");
+		System.out.println("Please enter your operation (+,-,*,/,>>,<<,~) ");
 		Scanner in = new Scanner(System.in);
 		operation = in.next().charAt(0);
 		if (operation == NOT || operation == SHIFTL || operation == SHIFTR) {
