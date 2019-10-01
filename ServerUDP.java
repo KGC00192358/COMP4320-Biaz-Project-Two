@@ -19,9 +19,8 @@ public class ServerUDP {
 			DatagramSocket sock = new DatagramSocket(recPort);  // UDP socket for receiving      
 			DatagramPacket operationPacket = receivePacket(sock);
 			System.out.println("Recieved operationPacket");
-			
 			byte[] resultHeader = encodeAnswer(performRequest(operationPacket));
-			System.out.println("Request Successfull");
+			System.out.println("Request Successful");
 			System.out.println("Attempting to send");            
 			Thread.sleep(2000);
 			if (!sendPacket(sock, operationPacket, resultHeader)) {
